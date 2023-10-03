@@ -123,14 +123,12 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-YT_API_KEY = 'AIzaSyCgK2XfKUL2EdHmeyoSaQJd85Nqd6KRgzg'
+YT_API_KEY = os.getenv('YT_API_KEY')
 SCHLUMPF_CHANNEL = 'UCoKCF-pUbhJtSsSGs6JCLfQ'
 
-REDIS_PASS = 'eKeishood4shu'
-
 # settings.py
-CELERY_BROKER_URL = 'redis://default:wwuKl5gEFdYVQdwrDxLirgLotDgqEpme@redis-12398.c242.eu-west-1-2.ec2.cloud.redislabs.com:12398/0'  # Replace with your Redis URL
-CELERY_RESULT_BACKEND = 'redis://default:wwuKl5gEFdYVQdwrDxLirgLotDgqEpme@redis-12398.c242.eu-west-1-2.ec2.cloud.redislabs.com:12398'
+CELERY_RESULT_BACKEND = os.getenv('REDISCLOUD_URL')
+CELERY_BROKER_URL = CELERY_RESULT_BACKEND + '/0'  # Replace with your Redis URL
 CELERY_BEAT_SCHEDULE = {
     'infrastructure.scrape_proxies': {
         'task': 'infrastructure.tasks.scrape_proxies',
