@@ -60,9 +60,9 @@ def transform_last_seen(datestring):
 
             if key == 'hours' or key == 'hour':
                 duration = timedelta(hours=int(val))
-            elif key == 'mins':
+            elif key == 'mins' or key == 'min':
                 duration = timedelta(minutes=int(val))
-            elif key == 'secs':
+            elif key == 'secs' or key == 'sec':
                 duration = timedelta(seconds=int(val))
             else:
                 raise KeyError
