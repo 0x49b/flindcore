@@ -9,7 +9,7 @@ class Creator(models.Model):
 
 
 class CreatorUsername(models.Model):
-    creator = models.ManyToOneRel(to=Creator, on_delete=models.CASCADE)
+    creator = models.ManyToOneRel(Creator, field_name='creator', to=Creator, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     username = models.CharField(max_length=1024)
 
