@@ -1,11 +1,16 @@
 from django.contrib import admin
-from .models import Creator, CreatorMeta
+from .models import Creator, CreatorMeta, CreatorUsername
 
 
 # Register your models here.
 @admin.register(Creator)
 class CreatorAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Creator._meta.get_fields()]
+
+
+@admin.register(CreatorUsername)
+class CreatorUsernameAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in CreatorUsername._meta.get_fields()]
 
 
 @admin.register(CreatorMeta)
