@@ -120,7 +120,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
-
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
@@ -137,6 +136,10 @@ CELERY_BROKER_URL = os.getenv('REDISCLOUD_URL', "") + '/0'  # Replace with your 
 CELERY_BEAT_SCHEDULE = {
     'infrastructure.scrape_proxies': {
         'task': 'infrastructure.tasks.scrape_proxies',
+        'schedule': crontab(minute='*/1')
+    },
+    'yt_channels.collect_youtube_stats': {
+        'task': 'yt_channels.tasks.collect_youtube_stats',
         'schedule': crontab(minute='*/1')
     },
 }
