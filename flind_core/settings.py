@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    "whitenoise.runserver_nostatic",
     'django.contrib.staticfiles',
 
     # Thirdparty
@@ -33,6 +34,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -118,6 +120,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -127,8 +132,8 @@ YT_API_KEY = os.getenv('YT_API_KEY')
 SCHLUMPF_CHANNEL = 'UCoKCF-pUbhJtSsSGs6JCLfQ'
 
 # settings.py
-CELERY_RESULT_BACKEND = os.getenv('REDISCLOUD_URL')
-CELERY_BROKER_URL = CELERY_RESULT_BACKEND + '/0'  # Replace with your Redis URL
+CELERY_RESULT_BACKEND = os.getenv('REDISCLOUD_URL', "")
+CELERY_BROKER_URL = os.getenv('REDISCLOUD_URL', "") + '/0'  # Replace with your Redis URL
 CELERY_BEAT_SCHEDULE = {
     'infrastructure.scrape_proxies': {
         'task': 'infrastructure.tasks.scrape_proxies',
