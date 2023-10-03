@@ -47,25 +47,30 @@ def transform_last_seen(datestring):
     current_datetime = datetime.now()
     duration = timedelta()
 
-    if len(ds) == 4:
-        val1 = ds[0]
-        val2 = ds[2]
-        duration = timedelta(hours=int(val1), minutes=int(val2))
+    try:
 
-    if len(ds) == 2:
-        val = ds[0]
-        key = ds[1]
+        if len(ds) == 4:
+            val1 = ds[0]
+            val2 = ds[2]
+            duration = timedelta(hours=int(val1), minutes=int(val2))
 
-        if key == 'hours' or key == 'hour':
-            duration = timedelta(hours=int(val))
-        elif key == 'mins':
-            duration = timedelta(minutes=int(val))
-        elif key == 'secs':
-            duration = timedelta(seconds=int(val))
-        else:
-            raise KeyError
+        if len(ds) == 2:
+            val = ds[0]
+            key = ds[1]
 
-    return current_datetime - duration
+            if key == 'hours' or key == 'hour':
+                duration = timedelta(hours=int(val))
+            elif key == 'mins':
+                duration = timedelta(minutes=int(val))
+            elif key == 'secs':
+                duration = timedelta(seconds=int(val))
+            else:
+                raise KeyError
+
+        return current_datetime - duration
+
+    except KeyError:
+        return current_datetime
 
 
 def table_data_text(table):
