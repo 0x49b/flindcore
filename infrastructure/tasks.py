@@ -27,7 +27,7 @@ def scrape_proxies():
             proxy_check = Proxy.objects.get(ip_address=d[0])
             proxy_check.last_checked = transform_last_seen(d[7])
             proxy_check.save()
-            logger.info(f'Updated proxy {proxy_check.ip_address}')
+            logger.info(f'Updated proxy {proxy_check.ip_address} {d[7]}')
         except Proxy.DoesNotExist:
             proxy = Proxy()
             proxy.ip_address = d[0]
@@ -39,7 +39,7 @@ def scrape_proxies():
             proxy.https = True if d[6] == 'yes' else False
             proxy.last_checked = transform_last_seen(d[7])
             proxy.save()
-            logger.info(f'saved new proxy {proxy.ip_address}')
+            logger.info(f'saved new proxy {proxy.ip_address} {d[7]}')
 
 
 def transform_last_seen(datestring):
