@@ -13,5 +13,19 @@
         </library>
       </libraries>
     </data-source>
+    <data-source source="LOCAL" name="@redis-12398.c242.eu-west-1-2.ec2.cloud.redislabs.com" uuid="91e890ed-490a-44d9-882f-77b6c612e72a">
+      <driver-ref>redis</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>jdbc.RedisDriver</jdbc-driver>
+      <jdbc-url>jdbc:redis://redis-12398.c242.eu-west-1-2.ec2.cloud.redislabs.com:12398</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="d7cubjsmf6aaaj@ec2-63-34-69-123.eu-west-1.compute.amazonaws.com" uuid="bece2111-a82a-45a7-81c5-b6c24a557cde">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ec2-63-34-69-123.eu-west-1.compute.amazonaws.com:5432/d7cubjsmf6aaaj</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
