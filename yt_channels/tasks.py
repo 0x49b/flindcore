@@ -22,3 +22,8 @@ def collect_youtube_stats():
         sr.channel_id = c.channel_id
         sr.raw_json = channel
         sr.save()
+
+
+@app.task(name='read-scrape-result')
+def read_scrape_result():
+    logger.info("This is test task to setup django-celery-beat from database")

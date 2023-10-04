@@ -14,6 +14,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['*', '*.herokuapp.com']
 
 INSTALLED_APPS = [
+    'admin_interface',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -133,16 +135,6 @@ SCHLUMPF_CHANNEL = 'UCoKCF-pUbhJtSsSGs6JCLfQ'
 # settings.py
 CELERY_RESULT_BACKEND = os.getenv('REDISCLOUD_URL', "")
 CELERY_BROKER_URL = os.getenv('REDISCLOUD_URL', "") + '/0'  # Replace with your Redis URL
-CELERY_BEAT_SCHEDULE = {
-    'infrastructure.scrape_proxies': {
-        'task': 'infrastructure.tasks.scrape_proxies',
-        'schedule': crontab(minute='*/1')
-    },
-    'yt_channels.collect_youtube_stats': {
-        'task': 'yt_channels.tasks.collect_youtube_stats',
-        'schedule': crontab(minute='*/1')
-    },
-}
 
 LOGGING = {
     "version": 1,
@@ -164,3 +156,6 @@ LOGGING = {
         },
     },
 }
+
+X_FRAME_OPTIONS = "SAMEORIGIN"
+SILENCED_SYSTEM_CHECKS = ["security.W019"]
