@@ -5,12 +5,14 @@ from .models import Creator, CreatorMeta, CreatorUsername
 # Register your models here.
 @admin.register(Creator)
 class CreatorAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Creator._meta.get_fields()]
+    list_display = ('name', 'yt_scrape')
+    list_filter = ('yt_scrape', )
 
 
 @admin.register(CreatorUsername)
 class CreatorUsernameAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in CreatorUsername._meta.get_fields()]
+    list_display = ('username', 'creator')
+    search_fields = ('username', 'creator')
 
 
 @admin.register(CreatorMeta)
