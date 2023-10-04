@@ -146,7 +146,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Cleanup Backend': {
         'task': 'celery.backend_cleanup',
-        'schedule': crontab(minute='0', hout='4')
+        'schedule': crontab(minute='0', hour='4')
     },
 }
 
