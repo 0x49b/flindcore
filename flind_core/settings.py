@@ -144,6 +144,10 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'yt_channels.tasks.collect_youtube_stats',
         'schedule': crontab(minute='*/1')
     },
+    'Cleanup Backend': {
+        'task': 'celery.backend_cleanup',
+        'schedule': crontab(minute='0', hout='4')
+    },
 }
 
 LOGGING = {
