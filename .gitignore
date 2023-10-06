@@ -1,0 +1,4 @@
+.idea/
+celerybeat-schedule.db
+db.sqlite
+venv

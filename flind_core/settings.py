@@ -1,29 +1,27 @@
 from pathlib import Path
+
+import dj_database_url
 from celery.schedules import crontab
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-c7ve8hbfm@&f8b^w(@9s(9t_7n=b-t!&gtendzzttjh=n+_5e8'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
-
-# Application definition
+ALLOWED_HOSTS = ['*', '*.herokuapp.com']
 
 INSTALLED_APPS = [
+    'admin_interface',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    "whitenoise.runserver_nostatic",
     'django.contrib.staticfiles',
 
     # Thirdparty
@@ -34,11 +32,11 @@ INSTALLED_APPS = [
     'creators',
     'yt_channels',
     'infrastructure'
-
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -71,37 +69,44 @@ WSGI_APPLICATION = 'flind_core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if IS_HEROKU_APP:
+    # In production on Heroku the database configuration is derived from the `DATABASE_URL`
+    # environment variable by the dj-database-url package. `DATABASE_URL` will be set
+    # automatically by Heroku when a database addon is attached to your Heroku app. See:
+    # https://devcenter.heroku.com/articles/provisioning-heroku-postgres
+    # https://github.com/jazzband/dj-database-url
+    DATABASES = {
+        "default": dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True,
+        ),
     }
-}
+else:
+    # When running locally in development or in CI, a sqlite database file will be used instead
+    # to simplify initial setup. Longer term it's recommended to use Postgres locally too.
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+AUTH_PASSWORD_VALIDATORS = [{'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+                            {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+                            {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+                            {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+                            ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = 'de-ch'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Zurich'
 
 USE_I18N = True
 
@@ -110,25 +115,38 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = "static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-YT_API_KEY = 'AIzaSyCgK2XfKUL2EdHmeyoSaQJd85Nqd6KRgzg'
+YT_API_KEY = os.getenv('YT_API_KEY')
 SCHLUMPF_CHANNEL = 'UCoKCF-pUbhJtSsSGs6JCLfQ'
 
-REDIS_PASS = 'eKeishood4shu'
-
 # settings.py
-CELERY_BROKER_URL = 'redis://default:wwuKl5gEFdYVQdwrDxLirgLotDgqEpme@redis-12398.c242.eu-west-1-2.ec2.cloud.redislabs.com:12398/0'  # Replace with your Redis URL
-CELERY_RESULT_BACKEND = 'redis://default:wwuKl5gEFdYVQdwrDxLirgLotDgqEpme@redis-12398.c242.eu-west-1-2.ec2.cloud.redislabs.com:12398'
+CELERY_RESULT_BACKEND = f'db+{os.getenv("DATABASE_URL", "")}'
+CELERY_BROKER_URL = os.getenv('REDISCLOUD_URL', "") + '/0'  # Replace with your Redis URL
 CELERY_BEAT_SCHEDULE = {
-    'infrastructure.scrape_proxies': {
+    'Scrape Proxies': {
         'task': 'infrastructure.tasks.scrape_proxies',
         'schedule': crontab(minute='*/1')
+    },
+    'Collect Youtube Stats': {
+        'task': 'yt_channels.tasks.collect_youtube_stats',
+        'schedule': crontab(minute='*/1')
+    },
+    'Cleanup Backend': {
+        'task': 'celery.backend_cleanup',
+        'schedule': crontab(minute='0', hour='4')
     },
 }
 
@@ -152,3 +170,6 @@ LOGGING = {
         },
     },
 }
+
+X_FRAME_OPTIONS = "SAMEORIGIN"
+SILENCED_SYSTEM_CHECKS = ["security.W019"]

@@ -27,7 +27,7 @@ def scrape_proxies():
             proxy_check = Proxy.objects.get(ip_address=d[0])
             proxy_check.last_checked = transform_last_seen(d[7])
             proxy_check.save()
-            logger.info(f'Updated proxy {proxy_check.ip_address}')
+            logger.info(f'Updated proxy {proxy_check.ip_address} {d[7]}')
         except Proxy.DoesNotExist:
             proxy = Proxy()
             proxy.ip_address = d[0]
@@ -39,7 +39,7 @@ def scrape_proxies():
             proxy.https = True if d[6] == 'yes' else False
             proxy.last_checked = transform_last_seen(d[7])
             proxy.save()
-            logger.info(f'saved new proxy {proxy.ip_address}')
+            logger.info(f'saved new proxy {proxy.ip_address} {d[7]}')
 
 
 def transform_last_seen(datestring):
@@ -47,25 +47,30 @@ def transform_last_seen(datestring):
     current_datetime = datetime.now()
     duration = timedelta()
 
-    if len(ds) == 4:
-        val1 = ds[0]
-        val2 = ds[2]
-        duration = timedelta(hours=int(val1), minutes=int(val2))
+    try:
 
-    if len(ds) == 2:
-        val = ds[0]
-        key = ds[1]
+        if len(ds) == 4:
+            val1 = ds[0]
+            val2 = ds[2]
+            duration = timedelta(hours=int(val1), minutes=int(val2))
 
-        if key == 'hours' or key == 'hour':
-            duration = timedelta(hours=int(val))
-        elif key == 'mins':
-            duration = timedelta(minutes=int(val))
-        elif key == 'secs':
-            duration = timedelta(seconds=int(val))
-        else:
-            raise KeyError
+        if len(ds) == 2:
+            val = ds[0]
+            key = ds[1]
 
-    return current_datetime - duration
+            if key == 'hours' or key == 'hour':
+                duration = timedelta(hours=int(val))
+            elif key == 'mins' or key == 'min':
+                duration = timedelta(minutes=int(val))
+            elif key == 'secs' or key == 'sec':
+                duration = timedelta(seconds=int(val))
+            else:
+                raise KeyError
+
+        return current_datetime - duration
+
+    except KeyError:
+        return current_datetime
 
 
 def table_data_text(table):

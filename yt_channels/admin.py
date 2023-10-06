@@ -4,7 +4,8 @@ from .models import Channel, ChannelStatistics, TopicCategories, ScrapeResult
 
 # Register your models here.
 class ChannelAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Channel._meta.get_fields()]
+    list_display = (
+        'channel_id', 'title', 'etag', 'localized_title', 'description', 'published_at', 'created', 'updated')
 
 
 class ChannelStatisticsAdmin(admin.ModelAdmin):
@@ -16,7 +17,13 @@ class TopicCategoriesAdmin(admin.ModelAdmin):
 
 
 class ScrapeResultAdmin(admin.ModelAdmin):
-    list_display = ('channel_id', 'created_at', )
+    list_display = ('channel_id', 'created_at',)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 admin.site.register(Channel, ChannelAdmin)
