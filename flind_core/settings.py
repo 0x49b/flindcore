@@ -3,6 +3,7 @@ from pathlib import Path
 import dj_database_url
 from celery.schedules import crontab
 import os
+import amqps
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
@@ -134,7 +135,8 @@ SCHLUMPF_CHANNEL = 'UCoKCF-pUbhJtSsSGs6JCLfQ'
 
 # settings.py
 CELERY_RESULT_BACKEND = os.getenv('CLOUDAMQP_URL', "")
-CELERY_BROKER_URL = os.getenv('CLOUDAMQP_URL', "") # Replace with your Redis URL
+CELERY_BROKER_URL = os.getenv('CLOUDAMQP_URL', "")  # Replace with your Redis URL
+BROKER_USE_SSL = True
 CELERY_BEAT_SCHEDULE = {
     'Scrape Proxies': {
         'task': 'infrastructure.tasks.scrape_proxies',
