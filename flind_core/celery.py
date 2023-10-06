@@ -6,6 +6,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flind_core.settings')
 app = Celery('flind_core')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
+app.conf.result_backend = 'db+'+os.getenv("DATABASE_URL", "")
 
 app.autodiscover_tasks()
 
