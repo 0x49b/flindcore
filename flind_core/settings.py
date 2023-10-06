@@ -136,7 +136,6 @@ SCHLUMPF_CHANNEL = 'UCoKCF-pUbhJtSsSGs6JCLfQ'
 # settings.py
 CELERY_RESULT_BACKEND = f'db+{os.getenv("DATABASE_URL", "")}'
 CELERY_BROKER_URL = os.getenv('REDISCLOUD_URL', "") + '/0'  # Replace with your Redis URL
-BROKER_USE_SSL = True
 CELERY_BEAT_SCHEDULE = {
     'Scrape Proxies': {
         'task': 'infrastructure.tasks.scrape_proxies',
