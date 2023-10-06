@@ -3,6 +3,7 @@ from pathlib import Path
 import dj_database_url
 from celery.schedules import crontab
 import os
+import amqps
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
