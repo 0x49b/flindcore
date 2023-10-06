@@ -133,7 +133,7 @@ YT_API_KEY = os.getenv('YT_API_KEY')
 SCHLUMPF_CHANNEL = 'UCoKCF-pUbhJtSsSGs6JCLfQ'
 
 # settings.py
-CELERY_RESULT_BACKEND = os.getenv('REDISCLOUD_URL', "")
+CELERY_RESULT_BACKEND = f'db+{os.getenv("DATABASE_URL", "")}'
 CELERY_BROKER_URL = os.getenv('REDISCLOUD_URL', "") + '/0'  # Replace with your Redis URL
 CELERY_BEAT_SCHEDULE = {
     'Scrape Proxies': {
