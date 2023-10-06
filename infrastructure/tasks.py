@@ -1,7 +1,7 @@
 from celery import shared_task
 from flind_core.celery import app
 from bs4 import BeautifulSoup
-
+from django.db import close_old_connections
 from infrastructure.models import Proxy
 from datetime import datetime, timedelta
 import requests
@@ -28,6 +28,7 @@ def scrape_proxies():
             proxy_check.last_checked = transform_last_seen(d[7])
             proxy_check.save()
             logger.info(f'Updated proxy {proxy_check.ip_address} {d[7]}')
+            close_old_connections()
         except Proxy.DoesNotExist:
             proxy = Proxy()
             proxy.ip_address = d[0]
@@ -40,6 +41,7 @@ def scrape_proxies():
             proxy.last_checked = transform_last_seen(d[7])
             proxy.save()
             logger.info(f'saved new proxy {proxy.ip_address} {d[7]}')
+            close_old_connections()
 
 
 def transform_last_seen(datestring):

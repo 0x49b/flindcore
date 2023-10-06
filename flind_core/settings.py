@@ -3,6 +3,7 @@ from pathlib import Path
 import dj_database_url
 from celery.schedules import crontab
 import os
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
@@ -129,12 +130,23 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-YT_API_KEY = os.getenv('YT_API_KEY')
+YT_API_KEY = ""
+if IS_HEROKU_APP:
+    YT_API_KEY = os.getenv('YT_API_KEY')
+else:
+    load_dotenv()
+    YT_API_KEY = os.getenv("YT_API_KEY")
+
 SCHLUMPF_CHANNEL = 'UCoKCF-pUbhJtSsSGs6JCLfQ'
 
-# settings.py
-CELERY_RESULT_BACKEND = os.getenv('REDISCLOUD_URL', "")
-CELERY_BROKER_URL = os.getenv('REDISCLOUD_URL', "") + '/0'  # Replace with your Redis URL
+REDIS_URL = ""
+if IS_HEROKU_APP:
+    REDIS_URL = os.getenv('REDISCLOUD_URL', "")
+else:
+    REDIS_URL = f'redis://localhost:12701'
+
+CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_BROKER_URL = REDIS_URL + '/0'  # Replace with your Redis URL
 CELERY_BEAT_SCHEDULE = {
     'Scrape Proxies': {
         'task': 'infrastructure.tasks.scrape_proxies',
@@ -142,11 +154,15 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Collect Youtube Stats': {
         'task': 'yt_channels.tasks.collect_youtube_stats',
-        'schedule': crontab(minute='*/1')
+        'schedule': crontab(minute='*/5')
     },
     'Cleanup Backend': {
         'task': 'celery.backend_cleanup',
         'schedule': crontab(minute='0', hour='4')
+    },
+    'Scrape Result Transformer': {
+        'task': 'yt-scrape-result-transformer',
+        'schedule': crontab(minute='*/1')
     },
 }
 

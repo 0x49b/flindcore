@@ -3,7 +3,6 @@ from django.db import models
 
 # Create your models here.
 class Channel(models.Model):
-
     class Meta:
         verbose_name = 'Channel'
         verbose_name_plural = 'Channels'
@@ -25,7 +24,6 @@ class Channel(models.Model):
 
 
 class ChannelStatistics(models.Model):
-
     class Meta:
         verbose_name = "Channel Statistic"
         verbose_name_plural = "Channel Statistics"
@@ -39,7 +37,6 @@ class ChannelStatistics(models.Model):
 
 
 class TopicCategories(models.Model):
-
     class Meta:
         verbose_name = "Topic Category"
         verbose_name_plural = "Topic Categories"
@@ -52,7 +49,6 @@ class TopicCategories(models.Model):
 
 
 class ScrapeResult(models.Model):
-
     class Meta:
         verbose_name = "Scrape Result"
         verbose_name_plural = "Scrape Results"
