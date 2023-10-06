@@ -1,4 +1,4 @@
 .idea/
 celerybeat-schedule.db
-db.sqlite
+db.sqlite3
 venv
