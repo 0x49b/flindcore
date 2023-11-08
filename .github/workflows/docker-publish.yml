@@ -1,3 +1,8 @@
+## Versions not in use
+## type=semver,pattern={{major}}.{{minor}}
+## type=semver,pattern={{major}}
+
+
 name: ci
 
 on:
