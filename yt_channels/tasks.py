@@ -18,6 +18,7 @@ def collect_youtube_stats():
     channel_list = Channel.objects.all()
 
     for c in channel_list:
+        logger.info(f'Now reading {c.channel_id}')
         channel = youtube.channels.list(channel_id=c.channel_id, return_json=True)
 
         sr = ScrapeResult()
