@@ -1,17 +1,17 @@
+import os
 from pathlib import Path
 
 import dj_database_url
 from celery.schedules import crontab
-import os
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
+IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ or os.environ.get("PRODUCTION", default=False)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-SECRET_KEY = 'django-insecure-c7ve8hbfm@&f8b^w(@9s(9t_7n=b-t!&gtendzzttjh=n+_5e8'
-DEBUG = True
+SECRET_KEY = os.environ.get("SECRET_KEY", default='django-insecure-c7ve8hbfm@&f8b^w(@9s(9t_7n=b-t!&gtendzzttjh=n+_5e8')
+DEBUG = int(os.environ.get("DEBUG", default=0))
 ALLOWED_HOSTS = ['*', '*.herokuapp.com']
 
 INSTALLED_APPS = [
