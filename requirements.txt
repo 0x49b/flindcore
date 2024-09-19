@@ -27,7 +27,7 @@ ephem==4.1.4
 exceptiongroup==1.1.3
 google-api-core==2.12.0
 google-api-python-client==2.101.0
-google-auth==2.23.2
+google-auth==2.35.0
 google-auth-httplib2==0.1.1
 googleapis-common-protos==1.60.0
 gunicorn==21.2.0
