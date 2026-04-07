@@ -15,7 +15,7 @@ click-repl==0.3.0
 cron-descriptor==1.4.0
 dataclasses-json==0.5.14
 dj-database-url==2.1.0
-Django==4.2.5
+Django==4.2.30
 django-admin-interface==0.26.1
 django-celery-beat==2.5.0
 django-celery-results==2.5.1
